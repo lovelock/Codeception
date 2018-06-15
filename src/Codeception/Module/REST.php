@@ -86,7 +86,7 @@ EOF;
     protected $connectionModule;
 
     public $params = [];
-    public $response = "";
+    public $response = '';
 
     public function _before(TestInterface $test)
     {
@@ -97,7 +97,7 @@ EOF;
     protected function resetVariables()
     {
         $this->params = [];
-        $this->response = "";
+        $this->response = '';
         $this->connectionModule->headers = [];
     }
 
@@ -132,7 +132,7 @@ EOF;
     protected function getRunningClient()
     {
         if ($this->client->getInternalRequest() === null) {
-            throw new ModuleException($this, "Response is empty. Use `\$I->sendXXX()` methods to send HTTP request");
+            throw new ModuleException($this, 'Response is empty. Use `$I->sendXXX()` methods to send HTTP request');
         }
         return $this->client;
     }
@@ -587,27 +587,30 @@ EOF;
                 }
                 $url .= http_build_query($parameters);
             }
-            if ($method == 'GET') {
-                $this->debugSection("Request", "$method $url");
+            if ($method === 'GET') {
+                $this->debugSection('Request', "$method $url");
                 $files = [];
             } else {
-                $this->debugSection("Request", "$method $url " . json_encode($parameters));
+                $this->debugSection('Request', "$method $url " . json_encode($parameters, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
                 $files = $this->formatFilesArray($files);
             }
-            $this->response = (string)$this->connectionModule->_request($method, $url, $parameters, $files);
+            $this->response = $this->connectionModule->_request($method, $url, $parameters, $files);
         } else {
             $requestData = $parameters;
             if ($this->isBinaryData($requestData)) {
                 $requestData = $this->binaryToDebugString($requestData);
             }
-            $this->debugSection("Request", "$method $url " . $requestData);
-            $this->response = (string)$this->connectionModule->_request($method, $url, [], $files, [], $parameters);
+            $this->debugSection('Request', "$method $url " . $requestData);
+            $this->response = $this->connectionModule->_request($method, $url, [], $files, [], $parameters);
         }
         $printedResponse = $this->response;
         if ($this->isBinaryData($printedResponse)) {
             $printedResponse = $this->binaryToDebugString($printedResponse);
+        } else {
+            $printedResponse = json_decode($printedResponse, true);
         }
-        $this->debugSection("Response", $printedResponse);
+
+        $this->debugSection('Response', $printedResponse);
     }
 
     /**
@@ -733,7 +736,7 @@ EOF;
             JSON_ERROR_NONE,
             $errorCode,
             sprintf(
-                "Invalid json: %s. System message: %s.",
+                'Invalid json: %s. System message: %s.',
                 $responseContent,
                 $errorMessage
             )
@@ -749,7 +752,7 @@ EOF;
      */
     public function seeResponseContains($text)
     {
-        $this->assertContains($text, $this->connectionModule->_getResponseContent(), "REST response contains");
+        $this->assertContains($text, $this->connectionModule->_getResponseContent(), 'REST response contains');
     }
 
     /**
@@ -761,7 +764,7 @@ EOF;
      */
     public function dontSeeResponseContains($text)
     {
-        $this->assertNotContains($text, $this->connectionModule->_getResponseContent(), "REST response contains");
+        $this->assertNotContains($text, $this->connectionModule->_getResponseContent(), 'REST response contains');
     }
 
     /**
@@ -995,8 +998,8 @@ EOF;
         $this->assertFalse(
             $jsonResponseArray->containsArray($json),
             "Response JSON contains provided JSON\n"
-            . "- <info>" . var_export($json, true) . "</info>\n"
-            . "+ " . var_export($jsonResponseArray->toArray(), true)
+            . '- <info>' . var_export($json, true) . "</info>\n"
+            . '+ ' . var_export($jsonResponseArray->toArray(), true)
         );
     }
 
@@ -1171,8 +1174,8 @@ EOF;
     {
         libxml_use_internal_errors(true);
         $doc = simplexml_load_string($this->connectionModule->_getResponseContent());
-        $num = "";
-        $title = "";
+        $num = '';
+        $title = '';
         if ($doc === false) {
             $error = libxml_get_last_error();
             $num = $error->code;
@@ -1304,7 +1307,7 @@ EOF;
         $this->assertContains(
             XmlUtils::toXml($xml)->C14N(),
             XmlUtils::toXml($this->connectionModule->_getResponseContent())->C14N(),
-            "found in XML Response"
+            'found in XML Response'
         );
     }
 
@@ -1321,7 +1324,7 @@ EOF;
         $this->assertNotContains(
             XmlUtils::toXml($xml)->C14N(),
             XmlUtils::toXml($this->connectionModule->_getResponseContent())->C14N(),
-            "found in XML Response"
+            'found in XML Response'
         );
     }
 
@@ -1398,8 +1401,8 @@ EOF;
     {
         throw new ModuleException(
             $this,
-            "This action was deprecated in Codeception 2.0.9 and removed in 2.1. "
-            . "Please use `grabDataFromResponseByJsonPath` instead"
+            'This action was deprecated in Codeception 2.0.9 and removed in 2.1. '
+            . 'Please use `grabDataFromResponseByJsonPath` instead'
         );
     }
 

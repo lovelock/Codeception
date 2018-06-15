@@ -146,12 +146,12 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
      */
     public function _getResponseContent()
     {
-        return (string)$this->getRunningClient()->getInternalResponse()->getContent();
+        return $this->getRunningClient()->getInternalResponse()->getContent();
     }
 
     protected function clientRequest($method, $uri, array $parameters = [], array $files = [], array $server = [], $content = null, $changeHistory = true)
     {
-        $this->debugSection("Request Headers", $this->headers);
+        $this->debugSection('Request Headers', $this->headers);
 
         foreach ($this->headers as $header => $val) { // moved from REST module
 
@@ -229,6 +229,7 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
      * @param array $files
      * @param array $server
      * @param null $content
+     * @throws ExternalUrlException
      */
     public function _loadPage(
         $method,
@@ -260,7 +261,7 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
         if ($this->client->getInternalRequest() === null) {
             throw new ModuleException(
                 $this,
-                "Page not loaded. Use `\$I->amOnPage` (or hidden API methods `_request` and `_loadPage`) to open it"
+                'Page not loaded. Use `$I->amOnPage` (or hidden API methods `_request` and `_loadPage`) to open it'
             );
         }
         return $this->client;
@@ -1259,7 +1260,7 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
         if (method_exists($response, 'getStatusCode')) {
             return $response->getStatusCode();
         }
-        return "N/A";
+        return 'N/A';
     }
 
     /**
@@ -1601,7 +1602,7 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
     {
         $nodes = $this->getCrawler()->filter('title');
         if (!$nodes->count()) {
-            throw new ElementNotFound("<title>", "Tag");
+            throw new ElementNotFound('<title>', 'Tag');
         }
         $this->assertContains($title, $nodes->first()->text(), "page title contains $title");
     }
