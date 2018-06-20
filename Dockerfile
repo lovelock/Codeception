@@ -30,9 +30,11 @@ RUN echo "date.timezone = UTC" >> /usr/local/etc/php/php.ini
 
 # Install composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN curl -sS https://getcomposer.org/installer | php -- \
+#RUN curl -sS https://getcomposer.org/installer | php -- \
+RUN curl -sS https://install.phpcomposer.com/installer | php -- \
         --filename=composer \
         --install-dir=/usr/local/bin
+RUN composer config -g repo.packagist composer https://packagist.phpcomposer.com
 RUN composer global require --optimize-autoloader \
         "hirak/prestissimo"
 
